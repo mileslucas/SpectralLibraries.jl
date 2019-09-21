@@ -1,0 +1,13 @@
+name = "SpectralLibraries"
+uuid = "c59a3624-a684-4389-ab90-f52b66770359"
+authors = ["Miles Lucas <mdlucas@hawaii.edu>"]
+version = "0.1.0"
+
+[compat]
+julia = "1.1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
