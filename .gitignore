@@ -1,7 +1,8 @@
 .DS_Store
-**/Manifest.toml
+Manifest.toml
 /dev/
 /docs/build/
 /docs/site/
 
-.vscode
+.vscode/
+*.fits

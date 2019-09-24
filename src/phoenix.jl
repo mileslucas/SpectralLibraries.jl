@@ -1,9 +1,11 @@
-using DataFrames, FITSIO, Unitful, UnitfulAstro
+using DataFrames, FITSIO, Unitful, UnitfulAstro, CSV
 
 export PHOENIX,
        update!,
        wave,
-       params
+       params,
+       ALL_PHOENIX_MODELS,
+       download_PHOENIX_model
 
 
 const PHOENIX_REGEX = r"lte(\d{5})-(\d\.\d{2})([\+|-]\d\.\d)(?:\.Alpha=([\+|-]\d\.\d{2}))?\.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits"
@@ -23,12 +25,12 @@ end
 """
     PHOENIX(path)
 
-Stellar Atmosphere Spectra from Husser et al. (2011)
+Stellar Atmosphere Spectra from Husser et al. (2013)
 
-This interfaces the PHOENIX ACES models as computed by Husser et al. (2011). It is parametrized by the following:
+This interfaces the PHOENIX ACES models as computed by Husser et al. (2013). It is parametrized by the following:
 
 | Parameter |     Range     | Description                                     |
-|----------:|:-------------:|-------------------------------------------------|
+|----------:|:-------------:|:------------------------------------------------|
 |       `T` | [2300, 12000] | Teff - The effective temperature in Kelvin      |
 |    `logg` |   [0.0, 6.0]  | log(g) - The surface gravity in log-solar units |
 |       `Z` |  [-4.0, 1.0]  | [Fe/H] - The iron fraction in log-solar units   |
@@ -36,11 +38,13 @@ This interfaces the PHOENIX ACES models as computed by Husser et al. (2011). It 
 
 The files must be organized the same way they are organized on the Göttinghen servers, as this constructs a table mapping the parameters to each discovered filename.
 
+# References
+[[1]](https://ui.adsabs.harvard.edu/abs/2013A%26A...553A...6H) Husser et al. (2013)
 
 # Examples
-```julia
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -87,9 +91,9 @@ end
 Return the flux density of the model at the given parameters. Raises an error if the model cannot be found. If `use_units` is true, will return the flux density as a `Unitful.Quantity` with the appropriate units.
 
 # Examples
-```julia
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -182,9 +186,9 @@ update!(p::PHOENIX) = update!(p, p.path)
 Returns the wavelength array for the library. If `use_units` is true, will return a `Unitful.Quantity` array with the appropriate units.
 
 # Examples
-```julia
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -216,7 +220,7 @@ julia> wave(grid, use_units=true)[1:10]
  500.8 Å
  500.9 Å
 
-````    
+```
 """
 wave(p::PHOENIX; use_units=false) = use_units ? p.wave * PHOENIX_WAVEUNITS : p.wave
 
@@ -226,9 +230,9 @@ wave(p::PHOENIX; use_units=false) = use_units ? p.wave * PHOENIX_WAVEUNITS : p.w
 Returns a dataframe of the parameters of each model.
 
 # Examples
-```julia
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -267,10 +271,75 @@ julia> convert(Matrix, ps)
 """
 params(p::PHOENIX) = select(p.entries, Not(:filename))
 
+"""
+    ALL_PHOENIX_MODELS
+
+`DataFrames.DataFrame` of every single available PHOENIX ACES model.
+"""
+const ALL_PHOENIX_MODELS = CSV.read(joinpath(@__DIR__, "PHOENIX.csv"))
+
+"""
+    download_PHOENIX_model(::DataFrame   ; path="PHOENIX")
+    download_PHOENIX_model(::DataFrameRow; path="PHOENIX")
+
+Given a row or subframe from the [`ALL_PHOENIX_MODELS`](@ref) dataframe, download into the given path making all directories on the way. Files are downloaded from the Goettingen HTTP server and should not be abused. This will also download the wavelength file if it is not already present.
+
+!!! warning
+    Do not abuse the Goettingen HTTP server by spamming this function!
+
+# Examples
+```julia-repl
+julia> size(ALL_PHOENIX_MODELS, 1)
+27605
+
+julia> subset = filter(r -> 6000 ≤ r.T ≤ 6300 && 4.0 ≤ r.logg ≤ 4.5 && r.Z == 0 && r.α == 0, a);
+
+julia> size(subset, 1)
+8
+
+julia> download_PHOENIX_model(subset)
+[ Info: Downloading wavelength file to PHOENIX/WAVE_PHOENIX-ACES-AGSS-COND-2011.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06200-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06300-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06100-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06000-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06200-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06300-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06100-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06000-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+
+```
+"""
+function download_PHOENIX_model(model::DataFrameRow; path="PHOENIX")
+    # Set up folders
+    folder = joinpath(path, model.folder)
+    !isdir(folder) && mkpath(folder)
+
+    # Download wavelength file
+    if !isfile(joinpath(path, PHOENIX_WAVEFILE))
+        front = "http://phoenix.astro.physik.uni-goettingen.de/data/HiResFITS"
+        url = join([front, PHOENIX_WAVEFILE], "/")
+        filename = joinpath(path, PHOENIX_WAVEFILE)
+        @info "Downloading wavelength file to $filename"
+        download(url, filename)
+    end
+
+    # Download model
+    front = "http://phoenix.astro.physik.uni-goettingen.de/data/HiResFITS/PHOENIX-ACES-AGSS-COND-2011"
+    url = join([front, model.folder, model.filename], "/")
+    filename = joinpath(folder, model.filename)
+    if !isfile(filename)
+        @info "Downloading model to $filename"
+        download(url, filename)
+    end
+end
+
+download_PHOENIX_model(models::DataFrame; path="PHOENIX") = download_PHOENIX_model.(eachrow(models), path=path)
+
 # Extended functions
 
 function Base.show(io::IO, s::PHOENIX)
-    println(io, "PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)")
+    println(io, "PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)")
     println(io, "path           = $(s.path)")
     pstring = join(PHOENIX_PARAMETERS, ", ")
     println(io, "parameters     = $pstring")
@@ -327,10 +396,10 @@ end
 
 Returns a library with parameters filtered by the function.
 
-# Example
-```julia
+# Examples
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -343,7 +412,7 @@ julia> query(model) = 6000 < model.T < 7000 &&
 query (generic function with 1 method)
 
 julia> new_grid = filter(query, grid)
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -379,9 +448,9 @@ Return a copy of the model library sorted by parameter(s) cols. cols can be eith
 If alg is nothing (the default), the most appropriate algorithm is chosen automatically among TimSort, MergeSort and RadixSort depending on the type of the sorting columns and on the number of rows in df. If rev is true, reverse sorting is performed. To enable reverse sorting only for some columns, pass order(c, rev=true) in cols, with c the corresponding column index (see example below). See sort! for a description of other keyword arguments.
 
 # Examples
-```julia
+```julia-repl
 julia> grid = PHOENIX("PHOENIX")
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
@@ -404,7 +473,7 @@ julia> params(grid)[1:10, :]
 │ 10  │ 5800  │ 5.0     │ 0.5     │ 0.0     │
 
 julia> logg_sorted = sort(p, :logg, rev=true)
-PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2011)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
 path           = /Users/miles/dev/starfish/examples/PHOENIX
 parameters     = T, logg, Z, α
 units          = wave (Å), flux (erg cm^-3 s^-1)
