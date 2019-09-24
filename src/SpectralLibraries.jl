@@ -1,5 +1,8 @@
 module SpectralLibraries
 
-greet() = print("Hello World!")
+
+abstract type AbstractSpectralLibrary end
+
+include("phoenix.jl")
 
 end # module
