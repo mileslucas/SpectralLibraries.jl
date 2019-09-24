@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>PHOENIX ACES · SpectralLibraries.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>SpectralLibraries.jl</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><span class="toctext">Libraries</span><ul><li class="current"><a class="toctext" href>PHOENIX ACES</a><ul class="internal"><li><a class="toctext" href="#Getting-the-Models-1">Getting the Models</a></li><li><a class="toctext" href="#Using-the-Models-1">Using the Models</a></li><li><a class="toctext" href="#API/Reference-1">API/Reference</a></li></ul></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li>Libraries</li><li><a href>PHOENIX ACES</a></li></ul><a class="edit-page" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/master/docs/src/phoenix.md#L"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>PHOENIX ACES</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="phoenix-1" href="#phoenix-1">PHOENIX ACES</a></h1><p>The models can be downloaded from the ftp server by following <a href="http://phoenix.astro.physik.uni-goettingen.de/?page_id=10">these instructions</a></p><h2><a class="nav-anchor" id="Getting-the-Models-1" href="#Getting-the-Models-1">Getting the Models</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.ALL_PHOENIX_MODELS" href="#SpectralLibraries.ALL_PHOENIX_MODELS"><code>SpectralLibraries.ALL_PHOENIX_MODELS</code></a> — <span class="docstring-category">Constant</span>.</div><div><div><pre><code class="language-julia">ALL_PHOENIX_MODELS</code></pre><p><code>DataFrames.DataFrame</code> of every single available PHOENIX ACES model.</p></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL274-L278">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.download_PHOENIX_model" href="#SpectralLibraries.download_PHOENIX_model"><code>SpectralLibraries.download_PHOENIX_model</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">download_PHOENIX_model(::DataFrame   ; path=&quot;PHOENIX&quot;)
+download_PHOENIX_model(::DataFrameRow; path=&quot;PHOENIX&quot;)</code></pre><p>Given a row or subframe from the <a href="#SpectralLibraries.ALL_PHOENIX_MODELS"><code>ALL_PHOENIX_MODELS</code></a> dataframe, download into the given path making all directories on the way. Files are downloaded from the Goettingen HTTP server and should not be abused. This will also download the wavelength file if it is not already present.</p><div class="admonition warning"><div class="admonition-title">Warning</div><div class="admonition-text"><p>Do not abuse the Goettingen HTTP server by spamming this function!</p></div></div><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; size(ALL_PHOENIX_MODELS, 1)
+27605
+
+julia&gt; subset = filter(r -&gt; 6000 ≤ r.T ≤ 6300 &amp;&amp; 4.0 ≤ r.logg ≤ 4.5 &amp;&amp; r.Z == 0 &amp;&amp; r.α == 0, a);
+
+julia&gt; size(subset, 1)
+8
+
+julia&gt; download_PHOENIX_model(subset)
+[ Info: Downloading wavelength file to PHOENIX/WAVE_PHOENIX-ACES-AGSS-COND-2011.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06200-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06300-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06100-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06000-4.00-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06200-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06300-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06100-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+[ Info: Downloading model to PHOENIX/Z-0.0/lte06000-4.50-0.0.PHOENIX-ACES-AGSS-COND-2011-HiRes.fits
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL281-L312">source</a></section><h2><a class="nav-anchor" id="Using-the-Models-1" href="#Using-the-Models-1">Using the Models</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.PHOENIX" href="#SpectralLibraries.PHOENIX"><code>SpectralLibraries.PHOENIX</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-julia">PHOENIX(path)</code></pre><p>Stellar Atmosphere Spectra from Husser et al. (2013)</p><p>This interfaces the PHOENIX ACES models as computed by Husser et al. (2013). It is parametrized by the following:</p><table><tr><th style="text-align: right">Parameter</th><th style="text-align: center">Range</th><th style="text-align: left">Description</th></tr><tr><td style="text-align: right"><code>T</code></td><td style="text-align: center">[2300, 12000]</td><td style="text-align: left">Teff - The effective temperature in Kelvin</td></tr><tr><td style="text-align: right"><code>logg</code></td><td style="text-align: center">[0.0, 6.0]</td><td style="text-align: left">log(g) - The surface gravity in log-solar units</td></tr><tr><td style="text-align: right"><code>Z</code></td><td style="text-align: center">[-4.0, 1.0]</td><td style="text-align: left">[Fe/H] - The iron fraction in log-solar units</td></tr><tr><td style="text-align: right"><code>α</code></td><td style="text-align: center">[-0.2, 1.2]</td><td style="text-align: left">[α/M] - The helium concentration fraction</td></tr></table><p>The files must be organized the same way they are organized on the Göttinghen servers, as this constructs a table mapping the parameters to each discovered filename.</p><p><strong>References</strong></p><p><a href="https://ui.adsabs.harvard.edu/abs/2013A%26A...553A...6H">[1]</a> Husser et al. (2013)</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+# Indexing
+julia&gt; grid[1]
+(T = 5700, logg = 3.5, Z = 0.5, α = 0.0) =&gt; Float32[2.3576384e-16, 2.3964725e-16, 2.4359302e-16, 2.4760205e-16, 2.516754e-16, 2.5581404e-16, 2.60019e-16, 2.642913e-16, 2.6863203e-16, 2.7304218e-16  …  1.06697366e12, 1.146122e12, 1.1551366e12, 1.1556633e12, 1.1557706e12, 1.1557903e12, 1.1554768e12, 1.1539062e12, 1.1525517e12, 1.1532526e12]
+
+# We can iterate over the library
+julia&gt; [println(model.T) for (model, flux) in grid[[1, 100, 500]]];
+5700
+7200
+7400
+
+# Accessing certain parameters
+julia&gt; grid.logg[1:10]
+10-element Array{Float64,1}:
+ 3.5
+ 4.0
+ 4.5
+ 5.0
+ 5.5
+ 6.0
+ 3.5
+ 4.0
+ 4.5
+ 5.0
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL25-L78">source</a><div><div><pre><code class="language-none">(::PHOENIX)(T, logg, Z, α=0; use_units=false)</code></pre><p>Return the flux density of the model at the given parameters. Raises an error if the model cannot be found. If <code>use_units</code> is true, will return the flux density as a <code>Unitful.Quantity</code> with the appropriate units.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; grid(6000, 4.5, 0)[1:10]
+10-element Array{Float32,1}:
+ 9.125983e-13 
+ 9.261124e-13 
+ 9.398209e-13 
+ 9.537266e-13 
+ 9.67832e-13  
+ 9.821403e-13 
+ 9.966539e-13 
+ 1.011376e-12 
+ 1.0263094e-12
+ 1.0414569e-12
+
+julia&gt; grid(6000, 4.5, 0, use_units=true)[1:10]
+10-element Array{Unitful.Quantity{Float32,𝐌*𝐋^-1*𝐓^-3,Unitful.FreeUnits{(erg, cm^-3, s^-1),𝐌*𝐋^-1*𝐓^-3,nothing}},1}:
+  9.125983f-13 erg cm^-3 s^-1
+  9.261124f-13 erg cm^-3 s^-1
+  9.398209f-13 erg cm^-3 s^-1
+  9.537266f-13 erg cm^-3 s^-1
+   9.67832f-13 erg cm^-3 s^-1
+  9.821403f-13 erg cm^-3 s^-1
+  9.966539f-13 erg cm^-3 s^-1
+  1.011376f-12 erg cm^-3 s^-1
+ 1.0263094f-12 erg cm^-3 s^-1
+ 1.0414569f-12 erg cm^-3 s^-1
+
+julia&gt; grid(6000, 4.5, 2)[1:10]
+ERROR: Could not find spectrum with parameters (6000, 4.5, 2, 0)
+[...]
+
+julia&gt; grid.(6000:100:6200, 4.5, 0)
+3-element Array{Array{Float32,1},1}:
+ [9.125983e-13, 9.261124e-13, 9.398209e-13, 9.537266e-13, 9.67832e-13, 9.821403e-13, 9.966539e-13, 1.011376e-12, 1.0263094e-12, 1.0414569e-12  …  1.200507e12, 1.2106235e12, 1.2115639e12, 1.211697e12, 1.211749e12, 1.2117668e12, 1.2116947e12, 1.2112217e12, 1.2107722e12, 1.211132e12]          
+ [3.4244803e-12, 3.4742658e-12, 3.5247538e-12, 3.5759542e-12, 3.6278769e-12, 3.6805316e-12, 3.733928e-12, 3.788077e-12, 3.842988e-12, 3.898672e-12  …  1.2244243e12, 1.2318009e12, 1.2325055e12, 1.2325888e12, 1.2326135e12, 1.2326139e12, 1.2325272e12, 1.2320685e12, 1.2316515e12, 1.231986e12]  
+ [1.1416081e-11, 1.1579233e-11, 1.1744649e-11, 1.19123565e-11, 1.2082389e-11, 1.2254776e-11, 1.2429551e-11, 1.2606744e-11, 1.2786388e-11, 1.2968517e-11  …  1.2485481e12, 1.2531918e12, 1.2535282e12, 1.253531e12, 1.2535174e12, 1.2534951e12, 1.2534e12, 1.2529466e12, 1.2525302e12, 1.2528731e12]
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL88-L139">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.update!" href="#SpectralLibraries.update!"><code>SpectralLibraries.update!</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">update!(::PHOENIX)
+update!(::PHOENIX, path::String)</code></pre><p>Goes through the given path (or the current path) for the library and recreates the table of models.</p></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL169-L174">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.wave" href="#SpectralLibraries.wave"><code>SpectralLibraries.wave</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">wave(::PHOENIX; use_units=false)</code></pre><p>Returns the wavelength array for the library. If <code>use_units</code> is true, will return a <code>Unitful.Quantity</code> array with the appropriate units.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; wave(grid)[1:10]
+10-element Array{Float64,1}:
+ 500.0
+ 500.1
+ 500.2
+ 500.3
+ 500.4
+ 500.5
+ 500.6
+ 500.7
+ 500.8
+ 500.9
+
+julia&gt; wave(grid, use_units=true)[1:10]
+10-element Array{Unitful.Quantity{Float64,𝐋,Unitful.FreeUnits{(Å,),𝐋,nothing}},1}:
+ 500.0 Å
+ 500.1 Å
+ 500.2 Å
+ 500.3 Å
+ 500.4 Å
+ 500.5 Å
+ 500.6 Å
+ 500.7 Å
+ 500.8 Å
+ 500.9 Å
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL183-L224">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="SpectralLibraries.params" href="#SpectralLibraries.params"><code>SpectralLibraries.params</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">params(::PHOENIX)</code></pre><p>Returns a dataframe of the parameters of each model.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; ps = params(grid)[1:10, :]
+10×4 DataFrames.DataFrame
+│ Row │ T     │ logg    │ Z       │ α       │
+│     │ Int64 │ Float64 │ Float64 │ Float64 │
+├─────┼───────┼─────────┼─────────┼─────────┤
+│ 1   │ 5700  │ 3.5     │ 0.5     │ 0.0     │
+│ 2   │ 5700  │ 4.0     │ 0.5     │ 0.0     │
+│ 3   │ 5700  │ 4.5     │ 0.5     │ 0.0     │
+│ 4   │ 5700  │ 5.0     │ 0.5     │ 0.0     │
+│ 5   │ 5700  │ 5.5     │ 0.5     │ 0.0     │
+│ 6   │ 5700  │ 6.0     │ 0.5     │ 0.0     │
+│ 7   │ 5800  │ 3.5     │ 0.5     │ 0.0     │
+│ 8   │ 5800  │ 4.0     │ 0.5     │ 0.0     │
+│ 9   │ 5800  │ 4.5     │ 0.5     │ 0.0     │
+│ 10  │ 5800  │ 5.0     │ 0.5     │ 0.0     │
+
+julia&gt; convert(Matrix, ps)
+10×4 Array{Float64,2}:
+ 5700.0  3.5  0.5  0.0
+ 5700.0  4.0  0.5  0.0
+ 5700.0  4.5  0.5  0.0
+ 5700.0  5.0  0.5  0.0
+ 5700.0  5.5  0.5  0.0
+ 5700.0  6.0  0.5  0.0
+ 5800.0  3.5  0.5  0.0
+ 5800.0  4.0  0.5  0.0
+ 5800.0  4.5  0.5  0.0
+ 5800.0  5.0  0.5  0.0
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL227-L271">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.length" href="#Base.length"><code>Base.length</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">length(::PHOENIX)</code></pre><p>Returns the number of models in the library.</p></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL350-L354">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.filter" href="#Base.filter"><code>Base.filter</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">filter(function, ::PHOENIX)</code></pre><p>Returns a library with parameters filtered by the function.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; query(model) = 6000 &lt; model.T &lt; 7000 &amp;&amp;
+               4.0 &lt; model.logg &lt; 5.0 &amp;&amp;
+               -1.0 &lt; model.Z &lt; 1.0 &amp;&amp;
+               model.α == 0
+query (generic function with 1 method)
+
+julia&gt; new_grid = filter(query, grid)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 27
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL394-L422">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.filter!" href="#Base.filter!"><code>Base.filter!</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">filter!(function, ::PHOENIX)</code></pre><p>In-place version of <a href="#Base.filter"><code>filter</code></a></p></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL384-L388">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.sort" href="#Base.sort"><code>Base.sort</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">sort(p::PHOENIX, cols;
+     alg::Union{Algorithm, Nothing}=nothing, lt=isless, by=identity,
+     rev::Bool=false, order::Ordering=Forward)</code></pre><p>Return a copy of the model library sorted by parameter(s) cols. cols can be either a Symbol or Integer column index, or a tuple or vector of such indices.</p><p>If alg is nothing (the default), the most appropriate algorithm is chosen automatically among TimSort, MergeSort and RadixSort depending on the type of the sorting columns and on the number of rows in df. If rev is true, reverse sorting is performed. To enable reverse sorting only for some columns, pass order(c, rev=true) in cols, with c the corresponding column index (see example below). See sort! for a description of other keyword arguments.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; grid = PHOENIX(&quot;PHOENIX&quot;)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; params(grid)[1:10, :]
+10×4 DataFrames.DataFrame
+│ Row │ T     │ logg    │ Z       │ α       │
+│     │ Int64 │ Float64 │ Float64 │ Float64 │
+├─────┼───────┼─────────┼─────────┼─────────┤
+│ 1   │ 5700  │ 3.5     │ 0.5     │ 0.0     │
+│ 2   │ 5700  │ 4.0     │ 0.5     │ 0.0     │
+│ 3   │ 5700  │ 4.5     │ 0.5     │ 0.0     │
+│ 4   │ 5700  │ 5.0     │ 0.5     │ 0.0     │
+│ 5   │ 5700  │ 5.5     │ 0.5     │ 0.0     │
+│ 6   │ 5700  │ 6.0     │ 0.5     │ 0.0     │
+│ 7   │ 5800  │ 3.5     │ 0.5     │ 0.0     │
+│ 8   │ 5800  │ 4.0     │ 0.5     │ 0.0     │
+│ 9   │ 5800  │ 4.5     │ 0.5     │ 0.0     │
+│ 10  │ 5800  │ 5.0     │ 0.5     │ 0.0     │
+
+julia&gt; logg_sorted = sort(p, :logg, rev=true)
+PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)
+path           = /Users/miles/dev/starfish/examples/PHOENIX
+parameters     = T, logg, Z, α
+units          = wave (Å), flux (erg cm^-3 s^-1)
+num. available = 659
+
+julia&gt; params(logg_sorted)[1:10, :]
+10×4 DataFrames.DataFrame
+│ Row │ T     │ logg    │ Z       │ α       │
+│     │ Int64 │ Float64 │ Float64 │ Float64 │
+├─────┼───────┼─────────┼─────────┼─────────┤
+│ 1   │ 5700  │ 6.0     │ 0.5     │ 0.0     │
+│ 2   │ 5800  │ 6.0     │ 0.5     │ 0.0     │
+│ 3   │ 5900  │ 6.0     │ 0.5     │ 0.0     │
+│ 4   │ 6000  │ 6.0     │ 0.5     │ 0.0     │
+│ 5   │ 6100  │ 6.0     │ 0.5     │ 0.0     │
+│ 6   │ 6200  │ 6.0     │ 0.5     │ 0.0     │
+│ 7   │ 6300  │ 6.0     │ 0.5     │ 0.0     │
+│ 8   │ 6400  │ 6.0     │ 0.5     │ 0.0     │
+│ 9   │ 6500  │ 6.0     │ 0.5     │ 0.0     │
+│ 10  │ 6600  │ 6.0     │ 0.5     │ 0.0     │
+</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL441-L499">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.sort!" href="#Base.sort!"><code>Base.sort!</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">sort!(p::PHOENIX, cols;
+      alg::Union{Algorithm, Nothing}=nothing, lt=isless, by=identity,
+      rev::Bool=false, order::Ordering=Forward)</code></pre><p>In-place version of <a href="#Base.sort"><code>sort</code></a></p></div></div><a class="source-link" target="_blank" href="https://github.com/mileslucas/SpectralLibraries.jl/blob/40d407606c1eb9f20aec5f5e400a627d34dac3aa/src/phoenix.jl#LL427-L433">source</a></section><h2><a class="nav-anchor" id="API/Reference-1" href="#API/Reference-1">API/Reference</a></h2><ul><li><a href="#SpectralLibraries.ALL_PHOENIX_MODELS"><code>SpectralLibraries.ALL_PHOENIX_MODELS</code></a></li><li><a href="#SpectralLibraries.PHOENIX"><code>SpectralLibraries.PHOENIX</code></a></li><li><a href="#Base.filter"><code>Base.filter</code></a></li><li><a href="#Base.filter!"><code>Base.filter!</code></a></li><li><a href="#Base.length"><code>Base.length</code></a></li><li><a href="#Base.sort"><code>Base.sort</code></a></li><li><a href="#Base.sort!"><code>Base.sort!</code></a></li><li><a href="#SpectralLibraries.download_PHOENIX_model"><code>SpectralLibraries.download_PHOENIX_model</code></a></li><li><a href="#SpectralLibraries.params"><code>SpectralLibraries.params</code></a></li><li><a href="#SpectralLibraries.update!"><code>SpectralLibraries.update!</code></a></li><li><a href="#SpectralLibraries.wave"><code>SpectralLibraries.wave</code></a></li></ul><footer><hr/><a class="previous" href="../"><span class="direction">Previous</span><span class="title">Home</span></a></footer></article></body></html>
