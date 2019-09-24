@@ -137,7 +137,7 @@ julia> grid.(6000:100:6200, 4.5, 0)
 
 ```
 """
-function (p::PHOENIX)(T, logg, Z, α=0; use_units=false)
+function (p::PHOENIX)(T, logg, Z, α = 0; use_units = false)
     query(p) = p.T == T && p.logg == logg && p.Z == Z && p.α == α
     filenames = filter(query, p).filename
     length(filenames) == 0 && error("Could not find spectrum with parameters ($T, $logg, $Z, $α)")
@@ -222,7 +222,7 @@ julia> wave(grid, use_units=true)[1:10]
 
 ```
 """
-wave(p::PHOENIX; use_units=false) = use_units ? p.wave * PHOENIX_WAVEUNITS : p.wave
+wave(p::PHOENIX; use_units = false) = use_units ? p.wave * PHOENIX_WAVEUNITS : p.wave
 
 """
     params(::PHOENIX)
@@ -310,7 +310,7 @@ julia> download_PHOENIX_model(subset)
 
 ```
 """
-function download_PHOENIX_model(model::DataFrameRow; path="PHOENIX")
+function download_PHOENIX_model(model::DataFrameRow; path = "PHOENIX")
     # Set up folders
     folder = joinpath(path, model.folder)
     !isdir(folder) && mkpath(folder)
@@ -334,13 +334,13 @@ function download_PHOENIX_model(model::DataFrameRow; path="PHOENIX")
     end
 end
 
-download_PHOENIX_model(models::DataFrame; path="PHOENIX") = download_PHOENIX_model.(eachrow(models), path=path)
+download_PHOENIX_model(models::DataFrame; path = "PHOENIX") = download_PHOENIX_model.(eachrow(models), path = path)
 
 # Extended functions
 
 function Base.show(io::IO, s::PHOENIX)
     println(io, "PHOENIX ACES Stellar Atmosphere Spectral Library (Husser et al. 2013)")
-    println(io, "path           = $(s.path)")
+println(io, "path           = $(s.path)")
     pstring = join(PHOENIX_PARAMETERS, ", ")
     println(io, "parameters     = $pstring")
     println(io, "units          = wave ($PHOENIX_WAVEUNITS), flux ($PHOENIX_FLUXUNITS)")
@@ -432,9 +432,9 @@ end
 In-place version of [`sort`](@ref)
 """
 function Base.sort!(p::PHOENIX, cols;
-    alg::Union{DataFrames.Algorithm, Nothing}=nothing, lt=isless, by=identity,
-    rev::Bool=false, order::DataFrames.Ordering=DataFrames.Forward)
-    p.entries = sort!(p.entries, cols, alg=alg, lt=lt, by=by, rev=rev, order=order)
+    alg::Union{DataFrames.Algorithm,Nothing} = nothing, lt = isless, by = identity,
+    rev::Bool = false, order::DataFrames.Ordering = DataFrames.Forward)
+    p.entries = sort!(p.entries, cols, alg = alg, lt = lt, by = by, rev = rev, order = order)
     return p
 end
 
@@ -498,7 +498,7 @@ julia> params(logg_sorted)[1:10, :]
 ```
 """
 function Base.sort(p::PHOENIX, cols;
-    alg::Union{DataFrames.Algorithm, Nothing}=nothing, lt=isless, by=identity,
-    rev::Bool=false, order::DataFrames.Ordering=DataFrames.Forward)
-    return sort!(deepcopy(p), cols, alg=alg, lt=lt, by=by, rev=rev, order=order)
+    alg::Union{DataFrames.Algorithm,Nothing} = nothing, lt = isless, by = identity,
+    rev::Bool = false, order::DataFrames.Ordering = DataFrames.Forward)
+    return sort!(deepcopy(p), cols, alg = alg, lt = lt, by = by, rev = rev, order = order)
 end

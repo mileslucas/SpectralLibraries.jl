@@ -1,7 +1,6 @@
 using Documenter, SpectralLibraries
 
-makedocs(;
-    modules = [SpectralLibraries],
+makedocs(modules = [SpectralLibraries],
     format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
     pages = [
         "Home" => "index.md",
@@ -12,7 +11,6 @@ makedocs(;
     strict = true,
     repo = "https://github.com/mileslucas/SpectralLibraries.jl/blob/{commit}{path}#L{line}",
     sitename = "SpectralLibraries.jl",
-    authors = "Miles Lucas <mdlucas@hawaii.edu>",)
+    authors = "Miles Lucas <mdlucas@hawaii.edu>", )
 
-deploydocs(
-    repo = "github.com/mileslucas/SpectralLibraries.jl",)
+deploydocs(repo = "github.com/mileslucas/SpectralLibraries.jl")
