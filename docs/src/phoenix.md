@@ -23,4 +23,5 @@ sort!
 
 ## API/Reference
 ```@index
+Pages = ["phoenix.md"]
 ```

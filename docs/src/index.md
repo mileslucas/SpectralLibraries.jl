@@ -17,7 +17,7 @@ julia> using SpectralLibraries
 ```
 ## Libraries
 
-These are the currently supported libraries
+The following libraries are currently supported
 
 - [PHOENIX ACES HiRes](@ref phoenix)
 
