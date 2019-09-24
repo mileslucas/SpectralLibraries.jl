@@ -16,7 +16,7 @@ The following libraries are currently supported:
 
 ## Installation
 
-```julia-repl
+```julia
 (v1.2) pkg> add https://github.com/mileslucas/SpectralLibraries.jl
 
 julia> using SpectralLibraries

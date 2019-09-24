@@ -1,4 +1,4 @@
-using DataFrames, FITSIO, Unitful, UnitfulAstro, CSV
+using DataFrames, FITSIO, Unitful, UnitfulAstro, CSV, DataDeps
 
 export PHOENIX,
        update!,
@@ -276,7 +276,7 @@ params(p::PHOENIX) = select(p.entries, Not(:filename))
 
 `DataFrames.DataFrame` of every single available PHOENIX ACES model.
 """
-const ALL_PHOENIX_MODELS = CSV.read(joinpath(@__DIR__, "PHOENIX.csv"))
+const ALL_PHOENIX_MODELS = CSV.read(datadep"PHOENIX_MODELS")
 
 """
     download_PHOENIX_model(::DataFrame   ; path="PHOENIX")
